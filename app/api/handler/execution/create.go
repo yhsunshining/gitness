@@ -38,8 +38,14 @@ func HandleCreate(executionCtrl *execution.Controller) http.HandlerFunc {
 		}
 
 		branch := request.GetBranchFromQuery(r)
-
-		execution, err := executionCtrl.Create(ctx, session, repoRef, pipelineIdentifier, branch)
+		queryParams := r.URL.Query()
+		queryMap := make(map[string]string)
+		for key, values := range queryParams {
+			if len(values) > 0 && key != "branch" {
+				queryMap[key] = values[0]
+			}
+		}
+		execution, err := executionCtrl.Create(ctx, session, repoRef, pipelineIdentifier, branch, &queryMap)
 		if err != nil {
 			render.TranslatedUserError(ctx, w, err)
 			return

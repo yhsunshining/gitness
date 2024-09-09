@@ -33,7 +33,13 @@ func (c *Controller) Create(
 	repoRef string,
 	pipelineIdentifier string,
 	branch string,
+	params *map[string]string,
 ) (*types.Execution, error) {
+	if params == nil {
+		// params 为空，设置默认值
+		defaultParams := map[string]string{}
+		params = &defaultParams
+	}
 	repo, err := c.repoStore.FindByRef(ctx, repoRef)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find repo by ref: %w", err)
@@ -81,7 +87,7 @@ func (c *Controller) Create(
 		Sender:      session.Principal.UID,
 		Source:      branch,
 		Target:      branch,
-		Params:      map[string]string{},
+		Params:      *params,
 		Timestamp:   commit.Author.When.UnixMilli(),
 	}
 
