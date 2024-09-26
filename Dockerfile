@@ -41,10 +41,10 @@ COPY . .
 COPY --from=web /usr/src/app/dist /app/web/dist
 
 # build
-ARG GIT_COMMIT
-ARG GITNESS_VERSION_MAJOR
-ARG GITNESS_VERSION_MINOR
-ARG GITNESS_VERSION_PATCH
+ARG GIT_COMMIT=
+ARG GITNESS_VERSION_MAJOR=1
+ARG GITNESS_VERSION_MINOR=0
+ARG GITNESS_VERSION_PATCH=0
 ARG TARGETOS TARGETARCH
 
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
@@ -56,7 +56,7 @@ RUN if [ "$TARGETARCH" = "arm64" ]; then \
 RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/go/pkg \
     if [ "$TARGETARCH" = "arm64" ]; then CC=~/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc; fi && \
-    LDFLAGS="-X github.com/harness/gitness/version.GitCommit=${GIT_COMMIT} -X github.com/harness/gitness/version.major=${GITNESS_VERSION_MAJOR} -X github.com/harness/gitness/version.minor=${GITNESS_VERSION_MINOR} -X github.com/harness/gitness/version.patch=${GITNESS_VERSION_PATCH} -extldflags '-static'" && \
+    LDFLAGS="-X github.com/harness/gitness/version.GitCommit=1f7d86 -X github.com/harness/gitness/version.major=1 -X github.com/harness/gitness/version.minor=0 -X github.com/harness/gitness/version.patch=0 -extldflags '-static'" && \
     CGO_ENABLED=1 \
     GOOS=$TARGETOS GOARCH=$TARGETARCH \
     CC=$CC go build -ldflags="$LDFLAGS" -o ./gitness ./cmd/gitness
