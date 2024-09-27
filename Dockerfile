@@ -48,7 +48,7 @@ ARG GITNESS_VERSION_PATCH=0
 ARG TARGETOS TARGETARCH
 
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
-    wget -P ~ https://musl.cc/aarch64-linux-musl-cross.tgz && \
+    wget -P ~ https://github.com/yhsunshining/gitness/releases/download/0.0.1-alpha.0/aarch64-linux-musl-cross.tgz && \
     tar -xvf ~/aarch64-linux-musl-cross.tgz -C ~ ; \
     fi
 
