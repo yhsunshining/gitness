@@ -1,7 +1,7 @@
 # ---------------------------------------------------------#
 #                     Build web image                      #
 # ---------------------------------------------------------#
-FROM node:16 as web
+FROM --platform=$TARGETPLATFORM node:16 as web
 
 WORKDIR /usr/src/app
 
@@ -18,7 +18,7 @@ RUN yarn && yarn build && yarn cache clean
 # ---------------------------------------------------------#
 #                   Build gitness image                    #
 # ---------------------------------------------------------#
-FROM golang:1.22-alpine3.18 as builder
+FROM --platform=$TARGETPLATFORM golang:1.22-alpine3.18 as builder
 
 RUN apk update \
     && apk add --no-cache protoc build-base git
@@ -66,7 +66,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
     CC=$CC go build -ldflags="$LDFLAGS" -o ./gitness ./cmd/gitness
 
 ### Pull CA Certs
-FROM alpine:latest as cert-image
+FROM --platform=$TARGETPLATFORM alpine:latest as cert-image
 
 RUN apk --update add ca-certificates
 
