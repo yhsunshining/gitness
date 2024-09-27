@@ -52,6 +52,7 @@ RUN if [ "$TARGETARCH" = "arm64" ]; then \
     tar -xvf ~/aarch64-linux-musl-cross.tgz -C ~ ; \
     fi
 
+RUN echo $CC
 RUN uname -m
 RUN file ~/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc
 
