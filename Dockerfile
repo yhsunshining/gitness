@@ -52,6 +52,9 @@ RUN if [ "$TARGETARCH" = "arm64" ]; then \
     tar -xvf ~/aarch64-linux-musl-cross.tgz -C ~ ; \
     fi
 
+RUN uname -m
+RUN file ~/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc
+
 # set required build flags
 RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/go/pkg \
