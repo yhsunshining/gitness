@@ -56,10 +56,12 @@ RUN echo $CC
 RUN uname -m
 RUN file ~/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc
 
+
+# if [ "$TARGETARCH" = "arm64" ]; then CC=~/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc; fi && \
+
 # set required build flags
 RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/go/pkg \
-    if [ "$TARGETARCH" = "arm64" ]; then CC=~/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc; fi && \
     LDFLAGS="-X github.com/harness/gitness/version.GitCommit=1f7d86 -X github.com/harness/gitness/version.major=1 -X github.com/harness/gitness/version.minor=0 -X github.com/harness/gitness/version.patch=0 -extldflags '-static'" && \
     CGO_ENABLED=1 \
     GOOS=linux GOARCH=arm64 \
