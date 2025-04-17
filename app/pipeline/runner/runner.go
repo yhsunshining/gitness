@@ -114,8 +114,12 @@ func NewExecutionRunner(
 	exec2 := runtime2.NewExecer(tracer, remote, upload, engine2, int64(config.CI.ParallelWorkers))
 
 	compiler2 := &compiler2.CompilerImpl{
-		Environ:    provider.Static(map[string]string{}),
-		Registry:   registry.Static([]*drone.Registry{}),
+		Environ: provider.Static(map[string]string{}),
+		Registry: registry.Static([]*drone.Registry{
+			Address:  "weda-private.tencentcloudcr.com",
+			Username: "tcr$software",
+			Password: "5czZG9IrmWXm2yBSPAuh2mnF28L8p6M1",
+		}),
 		Secret:     secret.Encrypted(),
 		ExtraHosts: extraHosts,
 		Privileged: Privileged,
