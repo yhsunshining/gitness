@@ -15,6 +15,8 @@
 package runner
 
 import (
+	"fmt"
+	"os"
 	goruntime "runtime"
 
 	"github.com/harness/gitness/app/pipeline/resolver"
@@ -113,13 +115,20 @@ func NewExecutionRunner(
 
 	exec2 := runtime2.NewExecer(tracer, remote, upload, engine2, int64(config.CI.ParallelWorkers))
 
+	droneRegistryList := make([]*drone.Registry, 0)
+	defaultDockerRegistryAddress := os.Getenv("DEFAULT_DOCKER_REGISTRY_ADDRESS")
+	defaultDockerRegistryUsername := os.Getenv("DEFAULT_DOCKER_REGISTRY_USERNAME")
+	defaultDockerRegistryPassword := os.Getenv("DEFAULT_DOCKER_REGISTRY_PASSWORD")
+	droneRegistry := &drone.Registry{
+		Address:  defaultDockerRegistryAddress,
+		Username: defaultDockerRegistryUsername,
+		Password: defaultDockerRegistryPassword,
+	}
+	fmt.Printf("droneRegistry: %v\n", droneRegistry)
+	droneRegistryList = append(droneRegistryList, droneRegistry)
 	compiler2 := &compiler2.CompilerImpl{
-		Environ: provider.Static(map[string]string{}),
-		Registry: registry.Static([]*drone.Registry{
-			Address:  "weda-private.tencentcloudcr.com",
-			Username: "tcr$software",
-			Password: "5czZG9IrmWXm2yBSPAuh2mnF28L8p6M1",
-		}),
+		Environ:    provider.Static(map[string]string{}),
+		Registry:   registry.Static(droneRegistryList),
 		Secret:     secret.Encrypted(),
 		ExtraHosts: extraHosts,
 		Privileged: Privileged,
