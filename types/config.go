@@ -204,6 +204,12 @@ type Config struct {
 		Expire     time.Duration `envconfig:"GITNESS_TOKEN_EXPIRE" default:"720h"`
 	}
 
+	DockerRegistry struct {
+		URL      string `envconfig:"DEFAULT_DOCKER_REGISTRY_ADDRESS"`
+		Username string `envconfig:"DEFAULT_DOCKER_REGISTRY_USERNAME"`
+		Password string `envconfig:"DEFAULT_DOCKER_REGISTRY_PASSWORD"`
+	}
+
 	Logs struct {
 		// S3 provides optional storage option for logs.
 		S3 struct {

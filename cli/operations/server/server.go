@@ -36,9 +36,12 @@ import (
 )
 
 type command struct {
-	envfile     string
-	enableCI    bool
-	initializer func(context.Context, *types.Config) (*System, error)
+	envfile       string
+	enableCI      bool
+	initializer   func(context.Context, *types.Config) (*System, error)
+	imageUsername string
+	imagePassword string
+	url           string
 }
 
 func (c *command) run(*kingpin.ParseContext) error {
@@ -56,6 +59,9 @@ func (c *command) run(*kingpin.ParseContext) error {
 	if err != nil {
 		return fmt.Errorf("encountered an error while loading configuration: %w", err)
 	}
+
+	// set up image registry info
+	setUpRegistry(config, c.imageUsername, c.imagePassword, c.url)
 
 	// configure the log level
 	SetupLogger(config)
@@ -208,6 +214,14 @@ func SetupLogger(config *types.Config) {
 	}
 }
 
+func setUpRegistry(config *types.Config, imageUsername, imagePassword, url string) {
+	if imageUsername != "" && imagePassword != "" && url != "" {
+		config.DockerRegistry.Username = imageUsername
+		config.DockerRegistry.Password = imagePassword
+		config.DockerRegistry.URL = url
+	}
+}
+
 func SetupProfiler(config *types.Config) {
 	profilerType, parsed := profiler.ParseType(config.Profiler.Type)
 	if !parsed {
@@ -230,6 +244,18 @@ func Register(app *kingpin.Application, initializer func(context.Context, *types
 	cmd.Arg("envfile", "load the environment variable file").
 		Default("").
 		StringVar(&c.envfile)
+
+	cmd.Flag("imageUsername", "the Docker image registry user name").
+		Default("").
+		StringVar(&c.imageUsername)
+
+	cmd.Flag("imagePassword", "the Docker image registry password").
+		Default("").
+		StringVar(&c.imagePassword)
+
+	cmd.Flag("url", "the Docker image registry URL").
+		Default("").
+		StringVar(&c.url)
 
 	cmd.Flag("enable-ci", "start ci runners for build executions").
 		Default("true").

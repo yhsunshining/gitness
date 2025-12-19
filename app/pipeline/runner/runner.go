@@ -15,12 +15,11 @@
 package runner
 
 import (
-	"fmt"
-	"os"
 	goruntime "runtime"
 
 	"github.com/harness/gitness/app/pipeline/resolver"
 	"github.com/harness/gitness/types"
+	"github.com/rs/zerolog/log"
 
 	dockerclient "github.com/docker/docker/client"
 	"github.com/drone-runners/drone-runner-docker/engine"
@@ -116,15 +115,12 @@ func NewExecutionRunner(
 	exec2 := runtime2.NewExecer(tracer, remote, upload, engine2, int64(config.CI.ParallelWorkers))
 
 	droneRegistryList := make([]*drone.Registry, 0)
-	defaultDockerRegistryAddress := os.Getenv("DEFAULT_DOCKER_REGISTRY_ADDRESS")
-	defaultDockerRegistryUsername := os.Getenv("DEFAULT_DOCKER_REGISTRY_USERNAME")
-	defaultDockerRegistryPassword := os.Getenv("DEFAULT_DOCKER_REGISTRY_PASSWORD")
 	droneRegistry := &drone.Registry{
-		Address:  defaultDockerRegistryAddress,
-		Username: defaultDockerRegistryUsername,
-		Password: defaultDockerRegistryPassword,
+		Address:  config.DockerRegistry.URL,
+		Username: config.DockerRegistry.Username,
+		Password: config.DockerRegistry.Password,
 	}
-	fmt.Printf("droneRegistry: %v\n", droneRegistry)
+	log.Debug().Msgf("droneRegistry url: %v", droneRegistry.Address)
 	droneRegistryList = append(droneRegistryList, droneRegistry)
 	compiler2 := &compiler2.CompilerImpl{
 		Environ:    provider.Static(map[string]string{}),
